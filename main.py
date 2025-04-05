@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from fastapi import FastAPI, Query
 import requests
 import xmltodict
@@ -8,7 +9,7 @@ SERVICE_KEY = "iKOpfM3zIpKL5tQ/SHLRwuSj4Odbz2JaoWdkLiNdNSKr6jD3wo/sUJ/3+jdWEmvDL
 
 @app.get("/employment-insurance")
 def get_insurance_info(
-    bizCd: str = Query(..., description="º¸Çè ±¸ºĞÄÚµå (01: °í¿ë, 02: »êÀç)"),
+    bizCd: str = Query(..., description="ë³´í—˜ êµ¬ë¶„ì½”ë“œ(01: ê³ ìš©, 02: ì‚°ì¬)"),
     pageNo: int = 1,
     numOfRows: int = 10
 ):
@@ -25,3 +26,4 @@ def get_insurance_info(
     dict_data = xmltodict.parse(xml_data)
 
     return dict_data
+	print("âœ… FastAPI ì•±ì´ ì •ìƒì ìœ¼ë¡œ ì‹œì‘ë˜ì—ˆìŠµë‹ˆë‹¤.")
