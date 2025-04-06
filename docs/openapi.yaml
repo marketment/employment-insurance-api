@@ -1,40 +1,157 @@
 openapi: 3.1.0
 info:
-  title: Employment Insurance API
-  description: 고용·산재 보험 가입 사업장 상세정보를 조회하는 API입니다.
-  version: "1.0.0"
+  title: 고용보험 API
+  version: '1.0.0'
+  description: 고용보험 청구 및 상태 조회를 위한 API입니다.
 
 servers:
-  - url: https://employment-insurance-api.onrender.com
+  - url: https://employment-insurance-api.marketment.dev
+    description: 기본 서버
 
 paths:
-  /employment-insurance:
+  /claims:
     get:
-      operationId: getEmploymentInsuranceInfo
-      summary: 고용/산재보험 사업장 정보 조회
+      operationId: listClaims
+      summary: 모든 청구 목록 조회
+      responses:
+        '200':
+          description: 청구 목록 반환
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Claim'
+
+    post:
+      operationId: createClaim
+      summary: 새로운 고용보험 청구 생성
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewClaim'
+      responses:
+        '201':
+          description: 청구 생성 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Claim'
+
+  /claims/{id}:
+    get:
+      operationId: getClaimById
+      summary: 청구 상세 정보 조회
       parameters:
-        - in: query
-          name: bizCd
+        - name: id
+          in: path
           required: true
           schema:
             type: string
-          description: 보험 구분코드 (01: 고용, 02: 산재)
-        - in: query
-          name: pageNo
-          required: false
-          schema:
-            type: integer
-          description: 페이지 번호
-        - in: query
-          name: numOfRows
-          required: false
-          schema:
-            type: integer
-          description: 한 페이지당 결과 수
       responses:
         '200':
-          description: 성공 응답
+          description: 단일 청구 정보
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Claim'
+
+  /benefits:
+    get:
+      operationId: listBenefits
+      summary: 수당 내역 전체 조회
+      responses:
+        '200':
+          description: 수당 리스트
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Benefit'
+
+  /benefits/{id}:
+    get:
+      operationId: getBenefitById
+      summary: 수당 상세 조회
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 수당 상세 정보
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Benefit'
+
+  /status:
+    get:
+      operationId: getSystemStatus
+      summary: 시스템 상태 확인
+      responses:
+        '200':
+          description: API 상태
           content:
             application/json:
               schema:
                 type: object
+                properties:
+                  status:
+                    type: string
+                  timestamp:
+                    type: string
+                    format: date-time
+
+components:
+  schemas:
+    Claim:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        ssn:
+          type: string
+        reason:
+          type: string
+        status:
+          type: string
+        submittedAt:
+          type: string
+          format: date-time
+
+    NewClaim:
+      type: object
+      required:
+        - name
+        - ssn
+        - reason
+      properties:
+        name:
+          type: string
+        ssn:
+          type: string
+        reason:
+          type: string
+
+    Benefit:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        amount:
+          type: number
+        issuedAt:
+          type: string
+          format: date-time
+
+
