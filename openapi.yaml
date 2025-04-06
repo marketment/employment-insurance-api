@@ -1,0 +1,33 @@
+openapi: 3.0.1
+info:
+  title: Employment Insurance API
+  description: 고용·산재 보험 가입 사업장 상세정보를 조회하는 API입니다.
+  version: "1.0.0"
+servers:
+  - url: https://employment-insurance-api.onrender.com
+paths:
+  /employment-insurance:
+    get:
+      summary: 고용/산재보험 사업장 정보 조회
+      parameters:
+        - in: query
+          name: bizCd
+          required: true
+          schema:
+            type: string
+          description: 보험 구분코드 (01: 고용, 02: 산재)
+        - in: query
+          name: pageNo
+          required: false
+          schema:
+            type: integer
+          description: 페이지 번호
+        - in: query
+          name: numOfRows
+          required: false
+          schema:
+            type: integer
+          description: 한 페이지당 결과 수
+      responses:
+        "200":
+          description: 성공 응답
